@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Restaurant Menu - Premium 3D Dining Experience</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description"
+    content="Experience our signature culinary creations in interactive 3D and Augmented Reality (AR) directly from your mobile browser before you order.">
+  <meta name="theme-color" content="#b8351a">
+
+  <!-- Premium Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Model Viewer CDN -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  <style>
+    /* ────────────────────────────────────────────────────────
+       1. DESIGN SYSTEM & VARIABLES
+       ──────────────────────────────────────────────────────── */
+    :root {
+      /* Colors - Light Luxury Palette */
+      --bg-primary: #fcf9f5;
+      --bg-secondary: #f4ede4;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-glass: rgba(255, 255, 255, 0.4);
+      --border-glass: rgba(255, 255, 255, 0.6);
+
+      --color-primary: #b8351a;
+      /* Deep Red Accent */
+      --color-primary-rgb: 184, 53, 26;
+      --color-secondary: #e8752a;
+      /* Orange Highlight */
+      --color-dark: #2a1b14;
+      /* Rich Dark Brown/Black */
+      --color-dark-rgb: 42, 27, 20;
+      --color-muted: #6e5e56;
+      /* Elegant Muted Brown */
+      --color-light: #fefcf9;
+      --shadow-color: rgba(42, 27, 20, 0.08);
+
+      /* Typography */
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+
+      /* UI Values */
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 8px;
+      --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-bounce: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Dark Mode Theme Variables */
+    [data-theme="dark"] {
+      --bg-primary: #120c08;
+      --bg-secondary: #1d140e;
+      --bg-card: rgba(29, 20, 14, 0.85);
+      --bg-glass: rgba(29, 20, 14, 0.45);
+      --border-glass: rgba(255, 255, 255, 0.05);
+
+      --color-primary: #d94c2e;
+      --color-primary-rgb: 217, 76, 46;
+      --color-secondary: #f08b43;
+      --color-dark: #fcf9f5;
+      --color-dark-rgb: 252, 249, 245;
+      --color-muted: #bdafa6;
+      --color-light: #1d140e;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Reset & Base Styles */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--color-dark);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      position: relative;
+    }
+
+    /* Subtle Elegant Background Texture/Decorations */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 500px;
+      background: radial-gradient(circle at 50% -20%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       2. TYPOGRAPHY & UTILITIES
+       ──────────────────────────────────────────────────────── */
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      padding: 24px 16px;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .delay-1 {
+      animation-delay: 0.1s;
+      opacity: 0;
+    }
+
+    .delay-2 {
+      animation-delay: 0.2s;
+      opacity: 0;
+    }
+
+    .delay-3 {
+      animation-delay: 0.3s;
+      opacity: 0;
+    }
+
+    .delay-4 {
+      animation-delay: 0.4s;
+      opacity: 0;
+    }
+
+    /* Button Pulse Animation */
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 12px rgba(var(--color-primary-rgb), 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0);
+      }
+    }
+
+    /* ────────────────────────────────────────────────────────
+       3. TOP NAVIGATION & THEME TOGGLE
+       ──────────────────────────────────────────────────────── */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      z-index: 10;
+    }
+
+    .theme-toggle-btn,
+    .top-action-btn {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--color-dark);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-bounce);
+      box-shadow: 0 4px 12px var(--shadow-color);
+    }
+
+    .theme-toggle-btn:hover,
+    .top-action-btn:hover {
+      transform: scale(1.1);
+      background: var(--color-primary);
+      color: var(--color-light);
+      border-color: var(--color-primary);
+    }
+
+    .theme-toggle-btn svg,
+    .top-action-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .theme-toggle-btn .sun-icon {
+      display: none;
+    }
+
+    [data-theme="dark"] .theme-toggle-btn .moon-icon {
+      display: none;
+    }
+
+    [data-theme="dark"] .theme-toggle-btn .sun-icon {
+      display: block;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       4. HEADER SECTION
+       ──────────────────────────────────────────────────────── */
+    .restaurant-header {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .logo-container {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      color: var(--color-light);
+      margin-bottom: 12px;
+      box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.25);
+    }
+
+    .logo-container svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
+    }
+
+    .restaurant-name {
+      font-size: 2.2rem;
+      letter-spacing: 0.03em;
+      color: var(--color-dark);
+      margin-bottom: 4px;
+    }
+
+    .restaurant-tagline {
+      font-size: 0.95rem;
+      color: var(--color-muted);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       5. MAIN DISH CARD (Glassmorphism & Luxury Styling)
+       ──────────────────────────────────────────────────────── */
+    .dish-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 16px 40px var(--shadow-color);
+      overflow: hidden;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .dish-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px rgba(var(--color-dark-rgb), 0.12);
+    }
+
+    /* Large Dish Image Section */
+    .dish-image-wrapper {
+      position: relative;
+      height: 280px;
+      width: 100%;
+      background: linear-gradient(135deg, #e8752a22 0%, #b8351a22 100%);
+      overflow: hidden;
+    }
+
+    /* Beautiful CSS Gradient Artwork placeholder that serves as premium dish artwork */
+    .dish-image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: radial-gradient(circle at center, #ffd3b5 0%, #f6a27e 40%, #c8432a 80%, #6e1c0b 100%);
+    }
+
+    /* Dark Mode adaptation for gradient */
+    [data-theme="dark"] .dish-image-placeholder {
+      background: radial-gradient(circle at center, #422119 0%, #301611 40%, #1a0805 90%);
+    }
+
+    .dish-image-art {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at center, #e67d3e 20%, #c43e24 70%);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: rotateDish 40s linear infinite;
+    }
+
+    @keyframes rotateDish {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .dish-image-art::after {
+      content: '🍛';
+      font-size: 5rem;
+    }
+
+    /* Availability & Category Badges */
+    .badges-overlay {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .badge-veg-nonveg {
+      background: rgba(255, 255, 255, 0.9);
+      color: #1e5927;
+      border: 1px solid #1e5927;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Red non-veg styling */
+    .badge-veg-nonveg.non-veg {
+      color: #a82315;
+      border-color: #a82315;
+    }
+
+    .badge-veg-nonveg::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: currentColor;
+    }
+
+    .badge-availability {
+      background: var(--color-primary);
+      color: var(--color-light);
+    }
+
+    /* Dish Info Details */
+    .dish-content {
+      padding: 24px;
+    }
+
+    .dish-meta-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 16px;
+    }
+
+    .dish-title {
+      font-size: 2rem;
+      color: var(--color-dark);
+      letter-spacing: 0.01em;
+    }
+
+    .dish-price {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    /* Food App Metric Row (Rating, Prep Time, Calories) */
+    .metrics-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed rgba(var(--color-dark-rgb), 0.12);
+    }
+
+    .metric-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--color-muted);
+      font-weight: 600;
+    }
+
+    .metric-item svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .metric-item.rating svg {
+      color: #ffb800;
+    }
+
+    /* Spice Level Indicator */
+    .spice-level {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .spice-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-muted);
+      margin-right: 4px;
+    }
+
+    .spice-pepper {
+      width: 16px;
+      height: 16px;
+      color: #ddd;
+      fill: currentColor;
+    }
+
+    .spice-pepper.active {
+      color: var(--color-primary);
+    }
+
+    /* Dish Description */
+    .dish-description {
+      font-size: 0.95rem;
+      color: var(--color-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* Action Buttons Area */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 480px) {
+      .btn-group {
+        flex-direction: row;
+      }
+    }
+
+    .btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 24px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-bounce);
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      color: var(--color-light);
+      box-shadow: 0 8px 24px rgba(var(--color-primary-rgb), 0.3);
+      animation: pulseGlow 2.5s infinite;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(var(--color-primary-rgb), 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--color-dark);
+      border: 1px solid rgba(var(--color-dark-rgb), 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(var(--color-dark-rgb), 0.05);
+      transform: translateY(-2px);
+    }
+
+    /* ────────────────────────────────────────────────────────
+       6. 3D INTERACTIVE VIEWER SECTION
+       ──────────────────────────────────────────────────────── */
+    .viewer-card {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-primary);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+    }
+
+    .viewer-card.active {
+      display: flex;
+      animation: fadeInModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInModal {
+      from {
+        opacity: 0;
+        transform: scale(1.03);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .viewer-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(var(--color-dark-rgb), 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .viewer-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--color-dark);
+    }
+
+    .close-viewer-btn {
+      background: none;
+      border: none;
+      color: var(--color-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-smooth);
+    }
+
+    .close-viewer-btn:hover {
+      color: var(--color-primary);
+      background: rgba(var(--color-primary-rgb), 0.1);
+    }
+
+    .close-viewer-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* Model Viewer Element */
+    .model-container {
+      width: 100%;
+      flex: 1;
+      position: relative;
+      background-color: var(--bg-secondary);
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      --poster-color: transparent;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(var(--color-primary-rgb), 0.1);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .progress-bar {
+      width: 140px;
+      height: 4px;
+      background-color: rgba(var(--color-dark-rgb), 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+      transition: width 0.3s ease;
+    }
+
+    /* Custom AR Guide Overlay */
+    .ar-guide-overlay {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(var(--color-dark-rgb), 0.85);
+      color: var(--color-light);
+      padding: 12px 20px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 6;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .ar-guide-overlay.active {
+      opacity: 1;
+    }
+
+    .ar-guide-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .ar-guide-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-light);
+      animation: dotPulse 1.2s infinite ease-in-out;
+    }
+
+    .ar-guide-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .ar-guide-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes dotPulse {
+
+      0%,
+      100% {
+        transform: scale(0.6);
+        opacity: 0.4;
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    /* Fallback UI Banner */
+    .fallback-banner {
+      display: none;
+      background: rgba(var(--color-secondary-rgb), 0.1);
+      border: 1px solid rgba(var(--color-secondary-rgb), 0.2);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--color-dark);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* Fullscreen Mode Styling */
+    .model-container.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      background-color: var(--bg-primary);
+    }
+
+    .model-container.fullscreen .fullscreen-btn-inner {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       7. CONTROL FLOATING PANEL (Fullscreen, Help, Share)
+       ──────────────────────────────────────────────────────── */
+    .viewer-controls-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 12px 20px;
+      background: rgba(var(--color-dark-rgb), 0.03);
+      border-top: 1px solid rgba(var(--color-dark-rgb), 0.05);
+    }
+
+    .control-btn {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--color-dark);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+
+    .control-btn:hover {
+      background: var(--color-dark);
+      color: var(--color-light);
+    }
+
+    .control-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       8. FLOATING DETAILS & POPUPS (Help Modal, Share Toast)
+       ──────────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition-smooth);
+      z-index: 999;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+      transform: scale(0.9);
+      transition: var(--transition-bounce);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: var(--color-dark);
+    }
+
+    .modal-body {
+      font-size: 0.95rem;
+      color: var(--color-muted);
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .help-step {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .help-number {
+      width: 24px;
+      height: 24px;
+      background: var(--color-primary);
+      color: var(--color-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translate(-50%, 40px);
+      background: var(--color-dark);
+      color: var(--color-light);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition-bounce);
+      z-index: 1000;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast-notification.active {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       9. QR FLOATING BANNER
+       ──────────────────────────────────────────────────────── */
+    .qr-banner {
+      background: rgba(var(--color-primary-rgb), 0.05);
+      border: 1px dashed rgba(var(--color-primary-rgb), 0.2);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .qr-banner-text {
+      flex: 1;
+    }
+
+    .qr-banner-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 4px;
+    }
+
+    .qr-banner-desc {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      line-height: 1.4;
+    }
+
+    .qr-icon-placeholder {
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 8px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      flex-shrink: 0;
+    }
+
+    .qr-icon-placeholder svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       10. FOOTER & BADGE
+       ──────────────────────────────────────────────────────── */
+    footer {
+      margin-top: auto;
+      width: 100%;
+      text-align: center;
+      padding: 40px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .agency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--color-muted);
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: var(--transition-smooth);
+    }
+
+    .agency-badge:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-primary);
+    }
+
+    .agency-badge span {
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .copyright {
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      opacity: 0.75;
+    }
+  </style>
+
+  <!-- Preload GLB models to optimize loading performance -->
+  <link rel="preload" href="models/burger.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="models/biryani.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="models/paneer_tikka.glb" as="fetch" crossorigin="anonymous">
+</head>
+
+<body>
+
+  <!-- ═════════════════ CONTAINER ═════════════════ -->
+  <div class="container">
+
+    <!-- Top Action Row -->
+    <nav class="top-nav animate-fade-in">
+      <button class="top-action-btn" id="help-btn" aria-label="AR Help Instructions">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </button>
+
+      <!-- Theme Toggle -->
+      <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Dark Mode">
+        <svg class="moon-icon" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="restaurant-header animate-fade-in delay-1">
+      <div class="logo-container">
+        <!-- Fork & Spoon/Knife minimalist elegant luxury logo -->
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-8.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3V2h-2v10h2v10h3V2h-3v4z" />
+        </svg>
+      </div>
+      <h1 class="restaurant-name">Nawab's Kitchen</h1>
+      <p class="restaurant-tagline">EXPERIENCE YOUR MEAL BEFORE YOU ORDER</p>
+    </header>
+
+    <!-- Fallback AR Banner (hidden initially) -->
+    <div class="fallback-banner animate-fade-in delay-2" id="fallback-banner">
+      <strong>AR is not available on this device.</strong> Please use the 3D Preview.
+    </div>
+
+    <!-- Dish Card 1: Double Cheeseburger -->
+    <main class="dish-card animate-fade-in delay-2" id="burger-card">
+      <div class="dish-image-wrapper">
+        <img src="public/images/Cheeseburger_with_sesame_bun_2K_202607111829.jpeg" alt="Double Cheeseburger"
+          style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="badges-overlay">
+          <span class="badge badge-veg-nonveg non-veg">Non-Veg</span>
+          <span class="badge badge-availability">Bestseller</span>
+        </div>
+      </div>
+
+      <div class="dish-content">
+        <div class="dish-meta-header">
+          <h2 class="dish-title">Double Cheeseburger</h2>
+          <span class="dish-price">₹250</span>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="metrics-row">
+          <div class="metric-item rating">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>4.8 (95+)</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>15 Mins</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>520 kcal</span>
+          </div>
+        </div>
+
+        <!-- Spice level indicator -->
+        <div class="spice-level">
+          <span class="spice-label">Spice Level:</span>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+        </div>
+
+        <p class="dish-description">
+          Two juicy flame-grilled patties, double melted cheddar cheese, crisp lettuce, pickles, and signature house
+          sauce on a toasted sesame bun.
+        </p>
+
+        <!-- Dynamic Action Buttons -->
+        <div class="btn-group">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/burger.glb" data-title="Double Cheeseburger">
+            👁️ View in 3D
+          </button>
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/burger.glb"
+            data-title="Double Cheeseburger">
+            📱 View in AR
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Dish Card 2: Signature Biryani -->
+    <section class="dish-card animate-fade-in delay-2" id="biryani-card">
+      <div class="dish-image-wrapper">
+        <img src="public/images/Masala_Dosa_with_Chutney_Sambar_202607111829.jpeg" alt="Signature Biryani"
+          style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="badges-overlay">
+          <span class="badge badge-veg-nonveg non-veg">Non-Veg</span>
+          <span class="badge badge-availability">Chef's Special</span>
+        </div>
+      </div>
+
+      <div class="dish-content">
+        <div class="dish-meta-header">
+          <h2 class="dish-title">Signature Biryani</h2>
+          <span class="dish-price">₹350</span>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="metrics-row">
+          <div class="metric-item rating">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>4.9 (120+)</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>25 Mins</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>680 kcal</span>
+          </div>
+        </div>
+
+        <!-- Spice level indicator -->
+        <div class="spice-level">
+          <span class="spice-label">Spice Level:</span>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+        </div>
+
+        <p class="dish-description">
+          Aromatic long-grain basmati rice, slow-cooked in a sealed clay pot (Dum style) with succulent meat pieces,
+          saffron, and our Chef's signature blend of secret spices.
+        </p>
+
+        <!-- Dynamic Action Buttons -->
+        <div class="btn-group">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/biryani.glb" data-title="Signature Biryani">
+            👁️ View in 3D
+          </button>
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/biryani.glb" data-title="Signature Biryani">
+            📱 View in AR
+          </button>
+        </div>
+    </section>
+
+    <!-- Dish Card 3: Paneer Tikka Skewers -->
+    <section class="dish-card animate-fade-in delay-3" id="paneer-card">
+      <div class="dish-image-wrapper">
+        <img src="public/images/Paneer_Tikka_Skewers.png" alt="Paneer Tikka Skewers"
+          style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="badges-overlay">
+          <span class="badge badge-veg-nonveg veg">Veg</span>
+          <span class="badge badge-availability">Tandoor Special</span>
+        </div>
+      </div>
+
+      <div class="dish-content">
+        <div class="dish-meta-header">
+          <h2 class="dish-title">Paneer Tikka Skewers</h2>
+          <span class="dish-price">₹280</span>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="metrics-row">
+          <div class="metric-item rating">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>4.7 (80+)</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>18 Mins</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>450 kcal</span>
+          </div>
+        </div>
+
+        <!-- Spice level indicator -->
+        <div class="spice-level">
+          <span class="spice-label">Spice Level:</span>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+        </div>
+
+        <p class="dish-description">
+          Creamy, spice-marinated paneer cubes skewered with fresh bell peppers and onions, grilled to smoky perfection
+          in our traditional clay oven.
+        </p>
+
+        <!-- Dynamic Action Buttons -->
+        <div class="btn-group">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/paneer_tikka.glb"
+            data-title="Paneer Tikka Skewers">
+            👁️ View in 3D
+          </button>
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/paneer_tikka.glb"
+            data-title="Paneer Tikka Skewers">
+            📱 View in AR
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3D Interactive Viewer Card -->
+    <section class="viewer-card" id="viewer-card-section">
+      <div class="viewer-header">
+        <h3 class="viewer-title" id="viewer-dynamic-title">Interactive 3D Preview</h3>
+        <button class="close-viewer-btn" id="close-viewer-btn" aria-label="Close 3D Viewer">
+          <svg viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="model-container" id="model-frame">
+        <!-- Interactive Model Viewer component -->
+        <model-viewer id="menu-model-viewer" src="" alt="3D restaurant model viewer" ar camera-controls auto-rotate
+          shadow-intensity="1" exposure="1" ar-placement="floor" ar-modes="webxr scene-viewer quick-look"
+          interaction-prompt="auto" loading="lazy">
+
+          <!-- Custom Loading Overlay -->
+          <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner"></div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+          </div>
+
+          <!-- AR Instructions Overlay (Simulation/Interactive guide) -->
+          <div class="ar-guide-overlay" id="ar-guide-overlay">
+            <span id="ar-guide-text">Move your phone slowly</span>
+            <div class="ar-guide-dots">
+              <div class="ar-guide-dot"></div>
+              <div class="ar-guide-dot"></div>
+              <div class="ar-guide-dot"></div>
+            </div>
+          </div>
+        </model-viewer>
+
+        <!-- Custom Action button container when in Fullscreen -->
+        <div class="fullscreen-btn-inner"></div>
+      </div>
+
+      <!-- Action Panel controls for viewer -->
+      <div class="viewer-controls-bar">
+        <button class="control-btn" id="fullscreen-toggle">
+          <svg viewBox="0 0 24 24">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+            </path>
+          </svg>
+          Fullscreen
+        </button>
+        <button class="control-btn" id="share-btn">
+          <svg viewBox="0 0 24 24">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          Share
+        </button>
+      </div>
+    </section>
+
+    <!-- QR Friendly Banner -->
+    <div class="qr-banner animate-fade-in delay-3">
+      <div class="qr-icon-placeholder">
+        <!-- SVG QR code decorative vector -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+          <rect x="2" y="2" width="6" height="6"></rect>
+          <rect x="16" y="2" width="6" height="6"></rect>
+          <rect x="2" y="16" width="6" height="6"></rect>
+          <path
+            d="M16 16h2v2h-2zm2 2h4v4h-4zm0-2h4v2h-4zm-2 4h2v2h-2zm-6-8h4v2h-4zm2 2h2v4h-2zm-4 2h2v2H8zm8-10h2v2h-2zM4 4h2v2H4zm14 0h2v2h-2zM4 18h2v2H4z">
+          </path>
+        </svg>
+      </div>
+      <div class="qr-banner-text">
+        <h4 class="qr-banner-title">Table QR Feature Active</h4>
+        <p class="qr-banner-desc">Share this page with others at your table to let them view the 3D menu on their
+          phones!</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═════════════════ MODALS & TOASTS ═════════════════ -->
+  <!-- Help Modal Overlay -->
+  <div class="modal-overlay" id="help-modal">
+    <div class="modal-content">
+      <h3 class="modal-title">AR Placement Guide</h3>
+      <div class="modal-body">
+        <div class="help-step">
+          <span class="help-number">1</span>
+          <p>Tap <strong>'View in AR'</strong>. Your phone will request camera access.</p>
+        </div>
+        <div class="help-step">
+          <span class="help-number">2</span>
+          <p>Point camera down and <strong>move your phone slowly</strong> around to detect a flat surface
+            (table/floor).</p>
+        </div>
+        <div class="help-step">
+          <span class="help-number">3</span>
+          <p>Once detected, <strong>tap on the screen</strong> to place the life-size dish in front of you.</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="padding: 12px 24px;" id="close-modal-btn">Got It</button>
+    </div>
+  </div>
+
+  <!-- Share Success Toast -->
+  <div class="toast-notification" id="share-toast">
+    Link copied to clipboard!
+  </div>
+
+  <!-- ═════════════════ FOOTER ═════════════════ -->
+  <footer class="animate-fade-in delay-4">
+    <a href="#" class="agency-badge" target="_blank" rel="noopener">
+      Powered by <span>Shivam Builds</span>
+    </a>
+    <p class="copyright">&copy; 2026 Nawab's Kitchen. All rights reserved.</p>
+  </footer>
+
+  <!-- ═════════════════ JAVASCRIPT LOGIC ═════════════════ -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // Elements References
+      const themeToggle = document.getElementById("theme-toggle");
+      const body = document.body;
+      const viewerCard = document.getElementById("viewer-card-section");
+      const viewerDynamicTitle = document.getElementById("viewer-dynamic-title");
+      const closeViewerBtn = document.getElementById("close-viewer-btn");
+      const modelViewer = document.getElementById("menu-model-viewer");
+      const loadingOverlay = document.getElementById("loading-overlay");
+      const progressFill = document.getElementById("progress-fill");
+      const fallbackBanner = document.getElementById("fallback-banner");
+      const helpBtn = document.getElementById("help-btn");
+      const helpModal = document.getElementById("help-modal");
+      const closeModalBtn = document.getElementById("close-modal-btn");
+      const shareBtn = document.getElementById("share-btn");
+      const shareToast = document.getElementById("share-toast");
+      const fullscreenToggle = document.getElementById("fullscreen-toggle");
+      const modelFrame = document.getElementById("model-frame");
+      const arGuideOverlay = document.getElementById("ar-guide-overlay");
+      const arGuideText = document.getElementById("ar-guide-text");
+
+      // 1. Theme Toggle Management (Persisted in localStorage)
+      const currentTheme = localStorage.getItem("theme") || "light";
+      body.setAttribute("data-theme", currentTheme);
+
+      themeToggle.addEventListener("click", () => {
+        const theme = body.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        body.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+      });
+
+      // 2. Custom Ripple Effect on Buttons
+      const buttons = document.querySelectorAll(".btn");
+      buttons.forEach(button => {
+        button.addEventListener("click", function (e) {
+          const x = e.clientX - e.target.getBoundingClientRect().left;
+          const y = e.clientY - e.target.getBoundingClientRect().top;
+          const ripple = document.createElement("span");
+          ripple.classList.add("ripple");
+          ripple.style.left = `${x}px`;
+          ripple.style.top = `${y}px`;
+          this.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+
+      // 3. Helper to switch model source and handle loading visual states
+      function changeModelSource(modelSrc, dishTitle) {
+        if (modelViewer.getAttribute("src") !== modelSrc) {
+          loadingOverlay.classList.remove("hidden");
+          progressFill.style.width = "0%";
+          modelViewer.setAttribute("src", modelSrc);
+          modelViewer.setAttribute("alt", "3D model of " + dishTitle);
+          viewerDynamicTitle.innerText = "Interactive 3D Preview - " + dishTitle;
+        }
+      }
+
+      // 4. Check and Handle AR Compatibility status
+      let isArCompatible = true;
+      customElements.whenDefined('model-viewer').then(() => {
+        setTimeout(() => {
+          const canAr = (modelViewer && typeof modelViewer.canActivateAR !== 'undefined') ? modelViewer.canActivateAR : false;
+          if (!canAr) {
+            isArCompatible = false;
+            fallbackBanner.style.display = "block";
+            // Update all AR buttons style/opacity to reflect fallback state
+            document.querySelectorAll(".ar-trigger-btn").forEach(btn => {
+              btn.style.opacity = "0.85";
+            });
+          }
+        }, 1500);
+      });
+
+      // 5. Wire up dynamic dish cards triggers
+      document.querySelectorAll(".ar-trigger-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const modelSrc = btn.getAttribute("data-model");
+          const dishTitle = btn.getAttribute("data-title");
+
+          changeModelSource(modelSrc, dishTitle);
+
+          const supportsAR = (modelViewer && typeof modelViewer.canActivateAR !== 'undefined') ? modelViewer.canActivateAR : false;
+          if (supportsAR && isArCompatible) {
+            // Trigger native AR directly
+            modelViewer.activateAR();
+          } else {
+            // Show requested AR fallback toast message
+            showToast("AR is not available on this device. Please use the 3D Preview.");
+          }
+        });
+      });
+
+      document.querySelectorAll(".view-3d-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const modelSrc = btn.getAttribute("data-model");
+          const dishTitle = btn.getAttribute("data-title");
+
+          changeModelSource(modelSrc, dishTitle);
+          showViewerCard();
+        });
+      });
+
+      closeViewerBtn.addEventListener("click", () => {
+        viewerCard.classList.remove("active");
+        document.body.style.overflow = "";
+      });
+
+      function showViewerCard() {
+        viewerCard.classList.add("active");
+        document.body.style.overflow = "hidden";
+        modelViewer.dismissPoster();
+      }
+
+      // 6. Model Viewer Load Progress Event
+      modelViewer.addEventListener("progress", (event) => {
+        const progress = event.detail.totalProgress * 100;
+        progressFill.style.width = `${progress}%`;
+        if (progress >= 100) {
+          setTimeout(() => {
+            loadingOverlay.classList.add("hidden");
+          }, 300);
+        }
+      });
+
+      // 7. AR status tracking overlay simulation
+      modelViewer.addEventListener("ar-status", (event) => {
+        const status = event.detail.status;
+        if (status === "session-started") {
+          showArPlacementTips();
+        } else if (status === "not-presenting") {
+          arGuideOverlay.classList.remove("active");
+        }
+      });
+
+      function showArPlacementTips() {
+        arGuideOverlay.classList.add("active");
+        arGuideText.innerText = "Move your phone slowly";
+
+        setTimeout(() => {
+          arGuideText.innerText = "Find a flat surface";
+        }, 3000);
+
+        setTimeout(() => {
+          arGuideText.innerText = "Tap screen to place dish";
+        }, 6000);
+
+        modelViewer.addEventListener("ar-tracking", (event) => {
+          if (event.detail.status === "tracking") {
+            arGuideOverlay.classList.remove("active");
+          }
+        });
+      }
+
+      // 8. Instructions Help Modal
+      helpBtn.addEventListener("click", () => {
+        helpModal.classList.add("active");
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        helpModal.classList.remove("active");
+      });
+
+      helpModal.addEventListener("click", (e) => {
+        if (e.target === helpModal) {
+          helpModal.classList.remove("active");
+        }
+      });
+
+      // 9. Fullscreen Toggle
+      fullscreenToggle.addEventListener("click", () => {
+        if (!document.fullscreenElement) {
+          modelFrame.requestFullscreen().then(() => {
+            modelFrame.classList.add("fullscreen");
+          }).catch(err => {
+            alert(`Error attempting to enable full-screen mode: ${err.message}`);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+          modelFrame.classList.remove("fullscreen");
+        }
+      });
+
+      // 10. Social Share Notification Toast & Custom Toast Helper
+      shareBtn.addEventListener("click", () => {
+        const urlToCopy = window.location.href;
+        navigator.clipboard.writeText(urlToCopy).then(() => {
+          showToast("Link copied to clipboard!");
+        }).catch(err => {
+          console.error("Failed to copy URL: ", err);
+        });
+      });
+
+      function showToast(message) {
+        shareToast.innerText = message;
+        shareToast.classList.add("active");
+        setTimeout(() => {
+          shareToast.classList.remove("active");
+        }, 3500);
+      }
+
+    });
+  </script>
+</body>
+
+</html>
