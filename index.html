@@ -1037,7 +1037,6 @@
 
   <!-- Preload GLB models to optimize loading performance -->
   <link rel="preload" href="models/burger.glb" as="fetch" crossorigin="anonymous">
-  <link rel="preload" href="models/biryani.glb" as="fetch" crossorigin="anonymous">
   <link rel="preload" href="models/paneer_tikka.glb" as="fetch" crossorigin="anonymous">
 </head>
 
@@ -1167,79 +1166,6 @@
         </div>
       </div>
     </main>
-
-    <!-- Dish Card 2: Signature Biryani -->
-    <section class="dish-card animate-fade-in delay-2" id="biryani-card">
-      <div class="dish-image-wrapper">
-        <img src="public/images/Masala_Dosa_with_Chutney_Sambar_202607111829.jpeg" alt="Signature Biryani"
-          style="width: 100%; height: 100%; object-fit: cover;">
-        <div class="badges-overlay">
-          <span class="badge badge-veg-nonveg non-veg">Non-Veg</span>
-          <span class="badge badge-availability">Chef's Special</span>
-        </div>
-      </div>
-
-      <div class="dish-content">
-        <div class="dish-meta-header">
-          <h2 class="dish-title">Signature Biryani</h2>
-          <span class="dish-price">₹350</span>
-        </div>
-
-        <!-- Metrics Row -->
-        <div class="metrics-row">
-          <div class="metric-item rating">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <span>4.9 (120+)</span>
-          </div>
-          <div class="metric-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span>25 Mins</span>
-          </div>
-          <div class="metric-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-            </svg>
-            <span>680 kcal</span>
-          </div>
-        </div>
-
-        <!-- Spice level indicator -->
-        <div class="spice-level">
-          <span class="spice-label">Spice Level:</span>
-          <svg class="spice-pepper active" viewBox="0 0 24 24">
-            <path
-              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
-          </svg>
-          <svg class="spice-pepper active" viewBox="0 0 24 24">
-            <path
-              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
-          </svg>
-          <svg class="spice-pepper" viewBox="0 0 24 24">
-            <path
-              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
-          </svg>
-        </div>
-
-        <p class="dish-description">
-          Aromatic long-grain basmati rice, slow-cooked in a sealed clay pot (Dum style) with succulent meat pieces,
-          saffron, and our Chef's signature blend of secret spices.
-        </p>
-
-        <!-- Dynamic Action Buttons -->
-        <div class="btn-group">
-          <button class="btn btn-secondary view-3d-btn" data-model="models/biryani.glb" data-title="Signature Biryani">
-            👁️ View in 3D
-          </button>
-          <button class="btn btn-primary ar-trigger-btn" data-model="models/biryani.glb" data-title="Signature Biryani">
-            📱 View in AR
-          </button>
-        </div>
-    </section>
 
     <!-- Dish Card 3: Paneer Tikka Skewers -->
     <section class="dish-card animate-fade-in delay-3" id="paneer-card">
