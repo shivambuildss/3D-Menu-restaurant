@@ -1036,8 +1036,8 @@
   </style>
 
   <!-- Preload GLB models to optimize loading performance -->
-  <link rel="preload" href="models/burger.glb" as="fetch" crossorigin="anonymous">
-  <link rel="preload" href="models/paneer_tikka.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="models/hamburger.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="models/pizza.glb" as="fetch" crossorigin="anonymous">
 </head>
 
 <body>
@@ -1156,10 +1156,10 @@
 
         <!-- Dynamic Action Buttons -->
         <div class="btn-group">
-          <button class="btn btn-secondary view-3d-btn" data-model="models/burger.glb" data-title="Double Cheeseburger">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/hamburger.glb" data-title="Double Cheeseburger">
             👁️ View in 3D
           </button>
-          <button class="btn btn-primary ar-trigger-btn" data-model="models/burger.glb"
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/hamburger.glb"
             data-title="Double Cheeseburger">
             📱 View in AR
           </button>
@@ -1167,21 +1167,21 @@
       </div>
     </main>
 
-    <!-- Dish Card 3: Paneer Tikka Skewers -->
-    <section class="dish-card animate-fade-in delay-3" id="paneer-card">
+    <!-- Dish Card 2: Gourmet Stone-Baked Pizza -->
+    <section class="dish-card animate-fade-in delay-3" id="pizza-card">
       <div class="dish-image-wrapper">
-        <img src="public/images/Paneer_Tikka_Skewers.png" alt="Paneer Tikka Skewers"
+        <img src="public/images/gourmet_pizza.png" alt="Gourmet Stone-Baked Pizza"
           style="width: 100%; height: 100%; object-fit: cover;">
         <div class="badges-overlay">
           <span class="badge badge-veg-nonveg veg">Veg</span>
-          <span class="badge badge-availability">Tandoor Special</span>
+          <span class="badge badge-availability">Woodfired Special</span>
         </div>
       </div>
 
       <div class="dish-content">
         <div class="dish-meta-header">
-          <h2 class="dish-title">Paneer Tikka Skewers</h2>
-          <span class="dish-price">₹280</span>
+          <h2 class="dish-title">Gourmet Stone-Baked Pizza</h2>
+          <span class="dish-price">₹320</span>
         </div>
 
         <!-- Metrics Row -->
@@ -1190,20 +1190,20 @@
             <svg viewBox="0 0 24 24">
               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
             </svg>
-            <span>4.7 (80+)</span>
+            <span>4.9 (110+)</span>
           </div>
           <div class="metric-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <span>18 Mins</span>
+            <span>20 Mins</span>
           </div>
           <div class="metric-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
             </svg>
-            <span>450 kcal</span>
+            <span>750 kcal</span>
           </div>
         </div>
 
@@ -1214,7 +1214,7 @@
             <path
               d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
           </svg>
-          <svg class="spice-pepper active" viewBox="0 0 24 24">
+          <svg class="spice-pepper" viewBox="0 0 24 24">
             <path
               d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
           </svg>
@@ -1225,18 +1225,17 @@
         </div>
 
         <p class="dish-description">
-          Creamy, spice-marinated paneer cubes skewered with fresh bell peppers and onions, grilled to smoky perfection
-          in our traditional clay oven.
+          A rustic stone-baked pizza topped with hand-crushed San Marzano tomatoes, fresh buffalo mozzarella, aromatic basil leaves, and a drizzle of extra virgin olive oil.
         </p>
 
         <!-- Dynamic Action Buttons -->
         <div class="btn-group">
-          <button class="btn btn-secondary view-3d-btn" data-model="models/paneer_tikka.glb"
-            data-title="Paneer Tikka Skewers">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/pizza.glb"
+            data-title="Gourmet Stone-Baked Pizza">
             👁️ View in 3D
           </button>
-          <button class="btn btn-primary ar-trigger-btn" data-model="models/paneer_tikka.glb"
-            data-title="Paneer Tikka Skewers">
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/pizza.glb"
+            data-title="Gourmet Stone-Baked Pizza">
             📱 View in AR
           </button>
         </div>
