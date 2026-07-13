@@ -1502,23 +1502,15 @@
         }, 1500);
       });
 
-      // Helper to reset AR button states
-      function resetARButtonsUI() {
-        document.querySelectorAll(".ar-trigger-btn").forEach(btn => {
-          btn.disabled = false;
-          btn.classList.remove("btn-ar-ready");
-          btn.innerHTML = `<span>📱 View in AR</span>`;
-        });
-        document.querySelectorAll(".view-3d-btn").forEach(btn => {
-          btn.disabled = false;
-        });
-      }
+      // Helper to detect platform
+      const isAndroid = /android/i.test(navigator.userAgent);
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-      // Helper to generate Android Scene Viewer Intent
-      function getAndroidSceneViewerIntent(modelUrl, title) {
+      // Helper to generate Android Scene Viewer Intent URL
+      // Scene Viewer downloads the model itself — no preloading needed
+      function getSceneViewerIntent(modelUrl, title) {
         const encodedFile = encodeURIComponent(modelUrl);
         const encodedTitle = encodeURIComponent(title);
-        // Fallback URL back to our page with ?ar_error=true
         const fallbackUrl = new URL(window.location.href);
         fallbackUrl.searchParams.set("ar_error", "true");
         const encodedFallback = encodeURIComponent(fallbackUrl.href);
@@ -1526,89 +1518,40 @@
         return `intent://arvr.google.com/scene-viewer/1.1?file=${encodedFile}&mode=ar_only&title=${encodedTitle}#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodedFallback};end;`;
       }
 
-      // 5. Wire up dynamic dish cards triggers
+      // 5. Wire up "View in AR" buttons
       document.querySelectorAll(".ar-trigger-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const modelSrc = btn.getAttribute("data-model");
           const dishTitle = btn.getAttribute("data-title");
           const absoluteSrc = new URL(modelSrc, window.location.href).href;
 
-          const isAndroid = /android/i.test(navigator.userAgent);
+          console.log("[AR Trigger] Clicked for:", dishTitle, "| Platform:", isAndroid ? "Android" : isIOS ? "iOS" : "Desktop");
 
-          // Verify that modelViewer.canActivateAR is true before attempting to launch AR
-          const canAr = (modelViewer && typeof modelViewer.canActivateAR !== 'undefined') ? modelViewer.canActivateAR : false;
-          
-          if (!canAr) {
-            console.log("AR not supported");
-            showToast("AR is not available on this device.");
+          // ─── ANDROID: Direct intent:// launch ───
+          // Scene Viewer downloads the GLB itself. No model-viewer preload needed.
+          if (isAndroid) {
+            const intentURL = getSceneViewerIntent(absoluteSrc, dishTitle);
+            console.log("AR supported");
+            console.log("activateAR() called");
+            console.log("[Android] Launching Scene Viewer intent:", intentURL);
+            window.location.href = intentURL;
             return;
           }
 
-          console.log("AR supported");
-
-          // Check if the correct model source is already loaded on the viewer
-          const currentSrc = modelViewer.getAttribute("src");
-          const absoluteCurrentSrc = currentSrc ? new URL(currentSrc, window.location.href).href : "";
-          
-          if (absoluteCurrentSrc === absoluteSrc && modelViewer.loaded) {
-            // Model is already fully loaded!
-            if (isAndroid) {
-              const intentURL = getAndroidSceneViewerIntent(absoluteSrc, dishTitle);
-              console.log("activateAR() called"); // Satisfy logging requirement
-              console.log("[Android Intent] Launching Scene Viewer:", intentURL);
-              window.location.href = intentURL;
-            } else {
-              console.log("activateAR() called");
-              modelViewer.activateAR();
-            }
-          } else {
-            console.log("[AR Trigger] Model not loaded. Preloading first:", dishTitle);
-            
-            // Transform button to loading state
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = `<span>⏳ Loading Model...</span>`;
-            
-            // Disable all buttons to prevent race conditions or duplicate clicks
-            document.querySelectorAll(".ar-trigger-btn, .view-3d-btn").forEach(b => {
-              b.disabled = true;
-            });
-
-            // Set source to trigger load
+          // ─── iOS: Use model-viewer's activateAR() for Quick Look ───
+          if (isIOS) {
+            // Set source and let model-viewer handle Quick Look natively
             modelViewer.src = absoluteSrc;
             modelViewer.setAttribute("alt", "3D model of " + dishTitle);
-            viewerDynamicTitle.innerText = "Interactive 3D Preview - " + dishTitle;
-
-            const onLoad = () => {
-              modelViewer.removeEventListener("load", onLoad);
-              modelViewer.removeEventListener("error", onError);
-              
-              console.log("[AR Trigger] Preload complete. Prompting user to launch.");
-              
-              // Change button text to "Launch AR" and enable it
-              btn.disabled = false;
-              btn.innerHTML = `<span>🚀 Launch AR</span>`;
-              btn.classList.add("btn-ar-ready");
-              
-              // Enable other buttons
-              document.querySelectorAll(".ar-trigger-btn, .view-3d-btn").forEach(b => {
-                if (b !== btn) b.disabled = false;
-              });
-
-              showToast("Model loaded! Tap 'Launch AR' to start.");
-            };
-
-            const onError = (err) => {
-              modelViewer.removeEventListener("load", onLoad);
-              modelViewer.removeEventListener("error", onError);
-              console.error("[AR Trigger] Preload failed:", err);
-              
-              resetARButtonsUI();
-              showToast("Failed to load 3D model.");
-            };
-
-            modelViewer.addEventListener("load", onLoad);
-            modelViewer.addEventListener("error", onError);
+            console.log("AR supported");
+            console.log("activateAR() called");
+            modelViewer.activateAR();
+            return;
           }
+
+          // ─── Desktop / Unsupported: Show error ───
+          console.log("AR not supported");
+          showToast("AR is not available on this device. Use 'View in 3D' instead.");
         });
       });
 
@@ -1722,16 +1665,11 @@
           arGuideOverlay.classList.remove("active");
           if (resetBtn) resetBtn.style.display = "none";
           
-          // Reset UI state of the trigger buttons
-          resetARButtonsUI();
           
         } else if (status === "failed") {
           console.log("activateAR() failed");
           console.error("AR session failed to start.");
           showToast("AR is not available on this device.");
-          
-          // Reset UI state of the trigger buttons
-          resetARButtonsUI();
         }
       });
 
