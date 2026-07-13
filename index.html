@@ -1409,6 +1409,21 @@
   <!-- ═════════════════ JAVASCRIPT LOGIC ═════════════════ -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      // Check for AR fallback error on load
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("ar_error") === "true") {
+        console.log("activateAR() failed"); // Log failed status
+        
+        // Remove the parameter from the URL bar so refresh doesn't trigger it again
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete("ar_error");
+        window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search);
+        
+        // Show the toast error after elements are loaded
+        setTimeout(() => {
+          showToast("AR is not available on this device.");
+        }, 500);
+      }
 
       // Elements References
       const themeToggle = document.getElementById("theme-toggle");
@@ -1495,12 +1510,26 @@
         });
       }
 
+      // Helper to generate Android Scene Viewer Intent
+      function getAndroidSceneViewerIntent(modelUrl, title) {
+        const encodedFile = encodeURIComponent(modelUrl);
+        const encodedTitle = encodeURIComponent(title);
+        // Fallback URL back to our page with ?ar_error=true
+        const fallbackUrl = new URL(window.location.href);
+        fallbackUrl.searchParams.set("ar_error", "true");
+        const encodedFallback = encodeURIComponent(fallbackUrl.href);
+
+        return `intent://arvr.google.com/scene-viewer/1.1?file=${encodedFile}&mode=ar_only&title=${encodedTitle}#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodedFallback};end;`;
+      }
+
       // 5. Wire up dynamic dish cards triggers
       document.querySelectorAll(".ar-trigger-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const modelSrc = btn.getAttribute("data-model");
           const dishTitle = btn.getAttribute("data-title");
           const absoluteSrc = new URL(modelSrc, window.location.href).href;
+
+          const isAndroid = /android/i.test(navigator.userAgent);
 
           // Verify that modelViewer.canActivateAR is true before attempting to launch AR
           const canAr = (modelViewer && typeof modelViewer.canActivateAR !== 'undefined') ? modelViewer.canActivateAR : false;
@@ -1518,9 +1547,16 @@
           const absoluteCurrentSrc = currentSrc ? new URL(currentSrc, window.location.href).href : "";
           
           if (absoluteCurrentSrc === absoluteSrc && modelViewer.loaded) {
-            // Model is already fully loaded! Call activateAR() synchronously in this click gesture
-            console.log("activateAR() called");
-            modelViewer.activateAR();
+            // Model is already fully loaded!
+            if (isAndroid) {
+              const intentURL = getAndroidSceneViewerIntent(absoluteSrc, dishTitle);
+              console.log("activateAR() called"); // Satisfy logging requirement
+              console.log("[Android Intent] Launching Scene Viewer:", intentURL);
+              window.location.href = intentURL;
+            } else {
+              console.log("activateAR() called");
+              modelViewer.activateAR();
+            }
           } else {
             console.log("[AR Trigger] Model not loaded. Preloading first:", dishTitle);
             
