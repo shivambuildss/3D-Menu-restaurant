@@ -569,15 +569,19 @@
       height: 100vh;
       background: var(--bg-primary);
       z-index: 2000;
-      display: none;
+      display: flex;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
       flex-direction: column;
       overflow: hidden;
-      transition: var(--transition-smooth);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
     }
 
     .viewer-card.active {
-      display: flex;
-      animation: fadeInModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
 
     @keyframes fadeInModal {
@@ -1297,7 +1301,7 @@
         <!-- Interactive Model Viewer component -->
         <model-viewer id="menu-model-viewer" src="" alt="3D restaurant model viewer" ar camera-controls auto-rotate
           shadow-intensity="1" exposure="1" ar-placement="floor" ar-modes="webxr scene-viewer quick-look"
-          interaction-prompt="auto" loading="lazy" bounds="tight" ar-scale="fixed">
+          interaction-prompt="auto" loading="eager" bounds="tight" ar-scale="fixed">
 
           <!-- Custom Loading Overlay -->
           <div class="loading-overlay" id="loading-overlay">
