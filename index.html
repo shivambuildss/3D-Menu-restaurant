@@ -1033,6 +1033,45 @@
       color: var(--color-muted);
       opacity: 0.75;
     }
+
+    /* Reset Placement Button in AR */
+    .ar-control-btn {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(184, 53, 26, 0.95);
+      color: #fefcf9;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      z-index: 100;
+      display: none;
+      pointer-events: auto;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    [data-theme="dark"] .ar-control-btn {
+      background: rgba(217, 76, 46, 0.95);
+    }
+
+    .ar-control-btn:hover {
+      background: #e8752a;
+      transform: translateX(-50%) scale(1.05);
+      box-shadow: 0 12px 35px rgba(232, 117, 42, 0.4);
+    }
+
+    .ar-control-btn:active {
+      transform: translateX(-50%) scale(0.95);
+    }
   </style>
 
   <!-- Preload GLB models to optimize loading performance -->
@@ -1277,6 +1316,9 @@
               <div class="ar-guide-dot"></div>
             </div>
           </div>
+
+          <!-- Reset Placement Button in AR -->
+          <button id="ar-reset-btn" class="ar-control-btn slot interactive">Reset Placement</button>
         </model-viewer>
 
         <!-- Custom Action button container when in Fullscreen -->
@@ -1450,35 +1492,14 @@
 
           const supportsAR = (modelViewer && typeof modelViewer.canActivateAR !== 'undefined') ? modelViewer.canActivateAR : false;
           if (supportsAR && isArCompatible) {
-            // If the model is already loaded, launch AR immediately
-            if (modelViewer.getAttribute("src") === absoluteSrc && modelViewer.loaded) {
-              console.log("[AR Trigger] Model already loaded. Activating AR for:", dishTitle);
-              modelViewer.activateAR();
-            } else {
-              // Otherwise, open 3D preview card, set source, and wait for 'load' to fire before triggering AR
-              console.log("[AR Trigger] Preloading model for AR:", dishTitle);
-              showViewerCard();
-              changeModelSource(modelSrc, dishTitle);
-
-              const onModelReady = () => {
-                modelViewer.removeEventListener("load", onModelReady);
-                modelViewer.removeEventListener("error", onModelError);
-                console.log("[AR Trigger] Model preloaded successfully. Launching AR...");
-                setTimeout(() => {
-                  modelViewer.activateAR();
-                }, 150);
-              };
-
-              const onModelError = (err) => {
-                modelViewer.removeEventListener("load", onModelReady);
-                modelViewer.removeEventListener("error", onModelError);
-                console.error("[AR Trigger] Failed to load model for AR:", err);
-                showToast("Could not load the 3D model for AR.");
-              };
-
-              modelViewer.addEventListener("load", onModelReady);
-              modelViewer.addEventListener("error", onModelError);
-            }
+            console.log("[AR Trigger] Activating AR directly for:", dishTitle);
+            
+            // Set source directly and trigger AR synchronously
+            modelViewer.src = absoluteSrc;
+            modelViewer.setAttribute("alt", "3D model of " + dishTitle);
+            viewerDynamicTitle.innerText = "Interactive 3D Preview - " + dishTitle;
+            
+            modelViewer.activateAR();
           } else {
             // Show requested AR fallback toast message
             showToast("AR is not available on this device. Please use the 3D Preview.");
@@ -1529,11 +1550,23 @@
           const center = modelViewer.getBoundingBoxCenter();
           console.log("Model Bounding Box Center:", `X: ${center.x}, Y: ${center.y}, Z: ${center.z}`);
           
-          // Auto-scale if model dimensions are out of bounds for a table dish (25cm target)
+          // Determine the target size based on the dish type
+          const srcLower = modelViewer.src.toLowerCase();
+          const titleLower = viewerDynamicTitle.innerText.toLowerCase();
+          
+          let targetSize = 0.25; // Default fallback (25cm)
+          if (srcLower.includes("burger") || srcLower.includes("hamburger") || titleLower.includes("burger")) {
+            targetSize = 0.14; // 14cm for burger (12-15 cm range)
+          } else if (srcLower.includes("pizza") || titleLower.includes("pizza")) {
+            targetSize = 0.30; // 30cm for pizza (28-32 cm range)
+          } else if (srcLower.includes("dosa") || titleLower.includes("dosa")) {
+            targetSize = 0.38; // 38cm for dosa (35-40 cm range)
+          }
+          
           const maxDim = Math.max(bbox.x, bbox.y, bbox.z);
-          if (maxDim > 0.6 || maxDim < 0.08) {
-            const scaleFactor = 0.25 / maxDim; // Normalize max dimension to 25cm (0.25m)
-            console.log(`[Auto-Scale] Model max dimension ${maxDim.toFixed(2)}m is out of normal food range. Scaling by ${scaleFactor.toFixed(4)} to fit 0.25m target.`);
+          if (maxDim > 0) {
+            const scaleFactor = targetSize / maxDim;
+            console.log(`[Auto-Scale] Model max dimension ${maxDim.toFixed(2)}m. Scaling by ${scaleFactor.toFixed(4)} to fit ${targetSize}m target.`);
             modelViewer.scale = `${scaleFactor} ${scaleFactor} ${scaleFactor}`;
             modelViewer.updateFraming();
           } else {
@@ -1549,41 +1582,194 @@
         console.error("Model Viewer error loading model:", event.detail || event);
       });
 
-      // 7. AR status tracking overlay simulation and logging
+      // 7. AR status tracking overlay and custom controls
+      const resetBtn = document.getElementById("ar-reset-btn");
+
       modelViewer.addEventListener("ar-status", (event) => {
         const status = event.detail.status;
         console.log("AR Session Status changed:", status);
+        
         if (status === "session-started") {
           console.log("AR session started successfully.");
-          showArPlacementTips();
+          // Disable auto-rotate in AR for stability
+          modelViewer.removeAttribute("auto-rotate");
+          
+          // Show scanning instructions, hide reset button
+          arGuideOverlay.classList.add("active");
+          arGuideText.innerText = "Scan flat surface to place dish...";
+          if (resetBtn) resetBtn.style.display = "none";
+          
         } else if (status === "object-placed") {
           console.log("Model placed on detected surface.");
+          // Hide scanning instructions, show reset button
+          arGuideOverlay.classList.remove("active");
+          if (resetBtn) resetBtn.style.display = "block";
+          
+          showToast("Dish placed! Drag to move, pinch to scale.");
+          
         } else if (status === "not-presenting") {
           console.log("AR session closed.");
+          // Restore auto-rotate outside of AR
+          modelViewer.setAttribute("auto-rotate", "");
+          
           arGuideOverlay.classList.remove("active");
+          if (resetBtn) resetBtn.style.display = "none";
+          
         } else if (status === "failed") {
           console.error("AR session failed to start.");
+          showToast("Failed to start AR session.");
         }
       });
 
-      function showArPlacementTips() {
-        arGuideOverlay.classList.add("active");
-        arGuideText.innerText = "Move your phone slowly";
-
-        setTimeout(() => {
-          arGuideText.innerText = "Find a flat surface";
-        }, 3000);
-
-        setTimeout(() => {
-          arGuideText.innerText = "Tap screen to place dish";
-        }, 6000);
-
-        modelViewer.addEventListener("ar-tracking", (event) => {
-          console.log("AR Tracking state changed:", event.detail.status);
-          if (event.detail.status === "tracking") {
+      // Handle AR tracking quality warnings
+      modelViewer.addEventListener("ar-tracking", (event) => {
+        console.log("AR Tracking state changed:", event.detail.status);
+        if (event.detail.status === "not-tracking") {
+          arGuideOverlay.classList.add("active");
+          arGuideText.innerText = "Tracking lost. Move phone slowly.";
+        } else if (event.detail.status === "tracking") {
+          if (modelViewer.getAttribute("ar-status") === "session-started") {
+            arGuideOverlay.classList.add("active");
+            arGuideText.innerText = "Scan flat surface to place dish...";
+          } else {
             arGuideOverlay.classList.remove("active");
           }
+        }
+      });
+
+      // Reset button click listener
+      if (resetBtn) {
+        resetBtn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          console.log("[AR Control] Resetting model placement...");
+          
+          const rendererSymbol = Object.getOwnPropertySymbols(modelViewer).find(s => s.description === 'renderer');
+          if (!rendererSymbol) return;
+          const renderer = modelViewer[rendererSymbol];
+          const arRenderer = renderer ? renderer.arRenderer : null;
+          if (!arRenderer || !arRenderer.currentSession) return;
+          
+          try {
+            const session = arRenderer.currentSession;
+            
+            // Request a new hit test source
+            const viewerSpace = await session.requestReferenceSpace('viewer');
+            const radians = 20 * Math.PI / 180;
+            const ray = new XRRay(
+              new DOMPoint(0, 0, 0),
+              { x: 0, y: -Math.sin(radians), z: -Math.cos(radians) }
+            );
+            const hitTestSource = await session.requestHitTestSource({ space: viewerSpace, offsetRay: ray });
+            
+            // Cancel the old hit source if it exists
+            if (arRenderer.initialHitSource) {
+              arRenderer.initialHitSource.cancel();
+            }
+            
+            // Re-assign the new hit test source so moveToFloor will run again
+            arRenderer.initialHitSource = hitTestSource;
+            arRenderer.placementComplete = false;
+            
+            // Hide placement box
+            if (arRenderer.placementBox) {
+              arRenderer.placementBox.show = false;
+            }
+            
+            // Reset shadow intensity to very low while scanning
+            arRenderer.presentedScene.setShadowIntensity(0.01);
+            
+            // Dispatch status event so the element updates its state and triggers UI
+            arRenderer.dispatchEvent({ type: 'status', status: 'session-started' });
+            
+            showToast("Scanning restarted. Move phone to find surface.");
+          } catch (err) {
+            console.error("Error resetting AR placement:", err);
+            showToast("Could not reset placement.");
+          }
         });
+      }
+
+      // 7.5. Double-Tap Repositioning gesture handler
+      let lastTapTime = 0;
+      modelViewer.addEventListener("touchstart", (e) => {
+        // Only run if AR is active and model is placed
+        if (modelViewer.getAttribute("ar-status") !== "object-placed") {
+          return;
+        }
+
+        const currentTime = new Date().getTime();
+        const tapDelay = currentTime - lastTapTime;
+        lastTapTime = currentTime;
+
+        if (tapDelay < 300 && tapDelay > 0) {
+          e.preventDefault();
+          console.log("[AR Gesture] Double tap detected. Repositioning model...");
+          handleDoubleTapReposition(e);
+        }
+      });
+
+      async function handleDoubleTapReposition(e) {
+        const rendererSymbol = Object.getOwnPropertySymbols(modelViewer).find(s => s.description === 'renderer');
+        if (!rendererSymbol) return;
+        const renderer = modelViewer[rendererSymbol];
+        const arRenderer = renderer ? renderer.arRenderer : null;
+        if (!arRenderer || !arRenderer.currentSession) return;
+
+        const session = arRenderer.currentSession;
+        
+        try {
+          const viewerSpace = await session.requestReferenceSpace('viewer');
+          const localSpace = renderer.threeRenderer.xr.getReferenceSpace();
+
+          // Cast a ray 20 degrees down from the camera center
+          const radians = 20 * Math.PI / 180;
+          const ray = new XRRay(
+            new DOMPoint(0, 0, 0),
+            { x: 0, y: -Math.sin(radians), z: -Math.cos(radians) }
+          );
+
+          const hitTestSource = await session.requestHitTestSource({ space: viewerSpace, offsetRay: ray });
+
+          // Poll arRenderer.frame on subsequent requestAnimationFrames
+          let attempts = 0;
+          const checkHitTest = () => {
+            const frame = arRenderer.frame;
+            if (frame && hitTestSource) {
+              const results = frame.getHitTestResults(hitTestSource);
+              if (results.length > 0) {
+                const hit = results[0];
+                const pose = hit.getPose(localSpace);
+                if (pose) {
+                  const newX = pose.transform.position.x;
+                  const newY = pose.transform.position.y;
+                  const newZ = pose.transform.position.z;
+
+                  console.log(`[Reposition] Moving model to: X=${newX}, Y=${newY}, Z=${newZ}`);
+                  arRenderer.goalPosition.set(newX, newY, newZ);
+                  
+                  showToast("Dish repositioned successfully!");
+                  hitTestSource.cancel();
+                  return;
+                }
+              }
+            }
+            
+            attempts++;
+            if (attempts < 10) {
+              requestAnimationFrame(checkHitTest);
+            } else {
+              console.warn("[Reposition] No surface detected for repositioning.");
+              showToast("Could not detect a surface there. Try again.");
+              if (hitTestSource) hitTestSource.cancel();
+            }
+          };
+
+          requestAnimationFrame(checkHitTest);
+        } catch (err) {
+          console.error("Error during double-tap repositioning:", err);
+        }
       }
 
       // 8. Instructions Help Modal
