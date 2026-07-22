@@ -1038,6 +1038,9 @@
   <!-- Preload GLB models to optimize loading performance -->
   <link rel="preload" href="models/hamburger.glb" as="fetch" crossorigin="anonymous">
   <link rel="preload" href="models/pizza.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="models/handpainted_watercolor_cake.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="models/indian_thali__free.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="models/momo_food.glb" as="fetch" crossorigin="anonymous">
 </head>
 
 <body>
@@ -1236,6 +1239,231 @@
           </button>
           <button class="btn btn-primary ar-trigger-btn" data-model="models/pizza.glb"
             data-title="Gourmet Stone-Baked Pizza">
+            📱 View in AR
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dish Card 3: Royal Indian Thali -->
+    <section class="dish-card animate-fade-in delay-3" id="thali-card">
+      <div class="dish-image-wrapper">
+        <img src="images/royal_indian_thali.png" alt="Royal Indian Thali"
+          style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="badges-overlay">
+          <span class="badge badge-veg-nonveg veg">Veg</span>
+          <span class="badge badge-availability">Chef's Special</span>
+        </div>
+      </div>
+
+      <div class="dish-content">
+        <div class="dish-meta-header">
+          <h2 class="dish-title">Royal Indian Thali</h2>
+          <span class="dish-price">₹380</span>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="metrics-row">
+          <div class="metric-item rating">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>4.9 (140+)</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>25 Mins</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>850 kcal</span>
+          </div>
+        </div>
+
+        <!-- Spice level indicator -->
+        <div class="spice-level">
+          <span class="spice-label">Spice Level:</span>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+        </div>
+
+        <p class="dish-description">
+          A lavish traditional royal platter featuring Paneer Butter Masala, Dal Makhani, mixed vegetable curry, fragrant Jeera Rice, butter Naan, crispy Samosa, and Gulab Jamun.
+        </p>
+
+        <!-- Dynamic Action Buttons -->
+        <div class="btn-group">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/indian_thali__free.glb"
+            data-title="Royal Indian Thali">
+            👁️ View in 3D
+          </button>
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/indian_thali__free.glb"
+            data-title="Royal Indian Thali">
+            📱 View in AR
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dish Card 4: Steamed Artisan Momos -->
+    <section class="dish-card animate-fade-in delay-4" id="momos-card">
+      <div class="dish-image-wrapper">
+        <img src="images/steamed_momos.png" alt="Steamed Artisan Momos"
+          style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="badges-overlay">
+          <span class="badge badge-veg-nonveg veg">Veg</span>
+          <span class="badge badge-availability">Freshly Steamed</span>
+        </div>
+      </div>
+
+      <div class="dish-content">
+        <div class="dish-meta-header">
+          <h2 class="dish-title">Steamed Artisan Momos</h2>
+          <span class="dish-price">₹180</span>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="metrics-row">
+          <div class="metric-item rating">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>4.7 (88+)</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>12 Mins</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>340 kcal</span>
+          </div>
+        </div>
+
+        <!-- Spice level indicator -->
+        <div class="spice-level">
+          <span class="spice-label">Spice Level:</span>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper active" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+        </div>
+
+        <p class="dish-description">
+          Tender, delicate steamed dumplings stuffed with finely seasoned mountain vegetables and herbs, served hot alongside our signature fiery red chili chutney.
+        </p>
+
+        <!-- Dynamic Action Buttons -->
+        <div class="btn-group">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/momo_food.glb"
+            data-title="Steamed Artisan Momos">
+            👁️ View in 3D
+          </button>
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/momo_food.glb"
+            data-title="Steamed Artisan Momos">
+            📱 View in AR
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dish Card 5: Handpainted Watercolor Cake -->
+    <section class="dish-card animate-fade-in delay-4" id="cake-card">
+      <div class="dish-image-wrapper">
+        <img src="images/handpainted_watercolor_cake.png" alt="Handpainted Watercolor Cake"
+          style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="badges-overlay">
+          <span class="badge badge-veg-nonveg veg">Veg</span>
+          <span class="badge badge-availability">Signature Dessert</span>
+        </div>
+      </div>
+
+      <div class="dish-content">
+        <div class="dish-meta-header">
+          <h2 class="dish-title">Handpainted Watercolor Cake</h2>
+          <span class="dish-price">₹220</span>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="metrics-row">
+          <div class="metric-item rating">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>4.9 (75+)</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>10 Mins</span>
+          </div>
+          <div class="metric-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <span>410 kcal</span>
+          </div>
+        </div>
+
+        <!-- Spice level indicator -->
+        <div class="spice-level">
+          <span class="spice-label">Spice Level:</span>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+          <svg class="spice-pepper" viewBox="0 0 24 24">
+            <path
+              d="M12 2C11.5 2 11 3 11 4C11 5 8 8.5 8 11.5C8 14 10 16 12 16C14 16 16 14 16 11.5C16 8.5 13 5 13 4C13 3 12.5 2 12 2Z" />
+          </svg>
+        </div>
+
+        <p class="dish-description">
+          An exquisite artisan dessert featuring delicate vanilla sponge layered with berry compote and adorned with handcrafted pastel watercolor frosting.
+        </p>
+
+        <!-- Dynamic Action Buttons -->
+        <div class="btn-group">
+          <button class="btn btn-secondary view-3d-btn" data-model="models/handpainted_watercolor_cake.glb"
+            data-title="Handpainted Watercolor Cake">
+            👁️ View in 3D
+          </button>
+          <button class="btn btn-primary ar-trigger-btn" data-model="models/handpainted_watercolor_cake.glb"
+            data-title="Handpainted Watercolor Cake">
             📱 View in AR
           </button>
         </div>
